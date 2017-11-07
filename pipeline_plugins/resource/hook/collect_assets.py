@@ -6,7 +6,8 @@ import re
 import shutil
 import traceback
 import threading
-from ftrack_hooks.hook_utils import get_unique_component_names, get_file_for_component
+from bait.ftrack.hook_data import get_unique_component_names
+from ftrack_hooks.hook_utils import get_file_for_component
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -245,6 +246,7 @@ def register(registry, **kw):
             getpass.getuser(), "collect_assets"),
         launch
         )
+
 
 if __name__ == "__main__":
     logger.setLevel(logging.INFO)
