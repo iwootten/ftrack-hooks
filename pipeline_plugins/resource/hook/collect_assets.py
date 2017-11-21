@@ -90,37 +90,38 @@ def create_job(event):
 
             component_data = query_runner.get_component_for_asset_version(item['entityId'], component_name)
 
-            src = component_data['component_locations'][0]['resource_identifier']
+            if component_data:
+                src = component_data['component_locations'][0]['resource_identifier']
 
-            # copying sources to destinations
-            if entity.getAsset().getType().getShort() == "img":
-                dir_name = entity.getParent().getParent().getName()
-                if parent_prefix:
-                    dir_name = parent_prefix
+                # copying sources to destinations
+                if entity.getAsset().getType().getShort() == "img":
+                    dir_name = entity.getParent().getParent().getName()
+                    if parent_prefix:
+                        dir_name = parent_prefix
 
-                asset_dir = os.path.join(values["collection_directory"], dir_name)
+                    asset_dir = os.path.join(values["collection_directory"], dir_name)
 
-                if os.path.exists(asset_dir):
-                    # delete existing files
-                    shutil.rmtree(asset_dir)
+                    if os.path.exists(asset_dir):
+                        # delete existing files
+                        shutil.rmtree(asset_dir)
 
-                os.makedirs(asset_dir)
+                    os.makedirs(asset_dir)
 
-                for f in os.listdir(os.path.dirname(src)):
-                    path = os.path.join(os.path.dirname(src), f)
+                    for f in os.listdir(os.path.dirname(src)):
+                        path = os.path.join(os.path.dirname(src), f)
 
-                    basename = parent_prefix + format_basename(path, values["file_formatting"])
+                        basename = parent_prefix + format_basename(path, values["file_formatting"])
 
-                    dst = os.path.join(asset_dir, basename)
+                        dst = os.path.join(asset_dir, basename)
 
-                    shutil.copy(path, dst)
-            else:
-                basename = format_basename(src, values['file_formatting'])
-                basename = parent_prefix + basename
+                        shutil.copy(path, dst)
+                else:
+                    basename = format_basename(src, values['file_formatting'])
+                    basename = parent_prefix + basename
 
-                dst = os.path.join(values["collection_directory"], basename)
+                    dst = os.path.join(values["collection_directory"], basename)
 
-                shutil.copy(src, dst)
+                    shutil.copy(src, dst)
         except:
             errors += parent_path + "\n"
             errors += traceback.format_exc() + "\n"
