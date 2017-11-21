@@ -6,8 +6,8 @@ import re
 import shutil
 import traceback
 import threading
+from bait.ftrack.query_runner import QueryRunner
 from bait.ftrack.hook_data import get_unique_component_names
-from ftrack_hooks.hook_utils import get_file_for_component
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -66,8 +66,11 @@ def create_job(event):
     values = event["data"]["values"]
     errors = ""
 
+    query_runner = QueryRunner()
+
     # collecting sources and destinations
     for item in event["data"]["selection"]:
+
         try:
             entity = ftrack.AssetVersion(item["entityId"])
 
@@ -85,12 +88,9 @@ def create_job(event):
 
             component_name = values["component_name"]
 
-            try:
-                component = entity.getComponent(name=component_name)
-            except:
-                continue
+            component_data = query_runner.get_component_for_asset_version(item['entityId'], component_name)
 
-            src = get_file_for_component(component)
+            src = component_data['component_locations'][0]['resource_identifier']
 
             # copying sources to destinations
             if entity.getAsset().getType().getShort() == "img":
@@ -109,9 +109,8 @@ def create_job(event):
                 for f in os.listdir(os.path.dirname(src)):
                     path = os.path.join(os.path.dirname(src), f)
 
-                    basename = format_basename(src, values["file_formatting"])
+                    basename = parent_prefix + format_basename(path, values["file_formatting"])
 
-                    basename = parent_prefix + re.sub(r".%04d", "", basename)
                     dst = os.path.join(asset_dir, basename)
 
                     shutil.copy(path, dst)
