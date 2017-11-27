@@ -116,6 +116,9 @@ def create_job(event):
 
                         shutil.copy(path, dst)
                 else:
+                    if component_data['system_type'] == 'sequence':
+                        src = src % 1
+
                     basename = format_basename(src, values['file_formatting'])
                     basename = parent_prefix + basename
 
