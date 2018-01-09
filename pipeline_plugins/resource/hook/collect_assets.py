@@ -129,6 +129,8 @@ def create_job(event):
             errors += parent_path + "\n"
             errors += traceback.format_exc() + "\n"
 
+    query_runner.close_session()
+
     # generate error report
     if errors:
         temp_txt = os.path.join(values["collection_directory"], "errors.txt")
