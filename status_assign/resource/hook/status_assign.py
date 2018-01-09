@@ -6,10 +6,10 @@ import ftrack
 def callback(event):
 
     # Return early if event wasn't triggered by the current user.
-    if "user" in event["data"]:
-        user = ftrack.User(event["data"]["user"]["userid"])
-        if user.getUsername() != getpass.getuser():
-            return
+    username = event['source'].get('user', {}).get('username', None)
+
+    if username != getpass.getuser():
+        return
 
     for entity in event['data'].get('entities', []):
 
