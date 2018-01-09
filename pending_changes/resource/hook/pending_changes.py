@@ -14,13 +14,6 @@ def async(fn):
 
 @async
 def callback(event):
-
-    # Return early if event wasn't triggered by the current user.
-    username = event['source'].get('user', {}).get('username', None)
-
-    if username != getpass.getuser():
-        return
-
     for entity in event['data'].get('entities', []):
 
         # Filter non-assetversions
@@ -71,4 +64,6 @@ def register(registry, **kw):
         return
 
     # Subscribe to events with the update topic.
-    ftrack.EVENT_HUB.subscribe("topic=ftrack.update", callback)
+    ftrack.EVENT_HUB.subscribe("topic=ftrack.update and source.user.username={}".format(
+        getpass.getuser()
+    ), callback)
