@@ -55,6 +55,7 @@ def modify_launch(event):
 
     # Collect workspace paths
     session = ftrack_api.Session()
+
     for item in event["data"].get("selection", []):
         if item["entityType"] == "task":
             templates = ftrack_template.discover_templates()
@@ -100,6 +101,7 @@ def modify_launch(event):
                                 "value": value
                             }
                         )
+    session.close()
 
     return event
 
