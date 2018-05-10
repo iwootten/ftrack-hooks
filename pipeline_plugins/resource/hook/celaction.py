@@ -121,8 +121,6 @@ class CelActionAction(object):
 
         context = event["data"].copy()
 
-        tools_path = os.getenv("NETWORK_TOOLS_PATH", os.path.dirname(__file__))
-
         # setting output parameters
         path = r"Software\CelAction\CelAction2D\User Settings"
         _winreg.CreateKey(_winreg.HKEY_CURRENT_USER, path)
@@ -130,7 +128,9 @@ class CelActionAction(object):
                                r"Software\CelAction\CelAction2D\User Settings",
                                0, _winreg.KEY_ALL_ACCESS)
 
-        path = os.path.join(tools_path, "pyblish", "pyblish_standalone.bat")
+        root_path = os.getenv("PIPELINE_ROOT", os.path.dirname(__file__))
+        path = os.path.join(root_path, "launchers", "pyblish_standalone.bat")
+
         _winreg.SetValueEx(hKey, "SubmitAppTitle", 0, _winreg.REG_SZ, path)
 
         parameters = " --path \"*SCENE*\" -d chunk *CHUNK* -d start *START*"

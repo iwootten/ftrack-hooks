@@ -129,9 +129,9 @@ class CelActionActionNetwork(object):
                                r"Software\CelAction\CelAction2D\User Settings",
                                0, _winreg.KEY_ALL_ACCESS)
 
-        pyblish_path = os.path.dirname(os.path.dirname(__file__))
-        pyblish_path = os.path.join(os.path.dirname(pyblish_path), "pyblish")
-        pyblish_path = os.path.join(pyblish_path, "pyblish_standalone.bat")
+        root_path = os.getenv("PIPELINE_ROOT", os.path.dirname(__file__))
+        pyblish_path = os.path.join(root_path, "launchers", "pyblish_standalone.bat")
+
         _winreg.SetValueEx(hKey, "SubmitAppTitle", 0, _winreg.REG_SZ,
                            pyblish_path)
 
